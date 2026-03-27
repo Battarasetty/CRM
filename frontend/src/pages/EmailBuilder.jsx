@@ -46,6 +46,7 @@ export default function EmailBuilder() {
     const [testEmail, setTestEmail] = useState('');
     const [sending, setSending] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [showHtml, setShowHtml] = useState(false);
 
     const applyTemplate = (template) => {
         setSubject(template.subject);
@@ -55,19 +56,18 @@ export default function EmailBuilder() {
 
     const handleSendTest = async () => {
         if (!testEmail) return alert('Enter a test email address');
+        if (!subject) return alert('Enter a subject line');
         if (!content) return alert('Write some content first');
         setSending(true);
         try {
-            await API.post('/campaigns', {
-                name: `Test — ${subject || 'No subject'}`,
-                type: 'Email',
-                subject: subject || 'Test Email',
+            const { data } = await API.post('/campaigns/send-test', {
+                to: testEmail,
+                subject,
                 content,
-                status: 'Draft',
             });
-            alert(`Test email template saved! (Connect Nodemailer to actually send)`);
+            alert(data.message);
         } catch (err) {
-            alert('Error: ' + err.message);
+            alert('Failed to send: ' + (err.response?.data?.message || err.message));
         }
         setSending(false);
     };
@@ -107,25 +107,43 @@ export default function EmailBuilder() {
                     {/* Middle — Editor */}
                     <div className="col-span-6">
                         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                            <div className="p-4 border-b border-gray-100">
+                            <div className="p-4 border-b border-gray-100 flex justify-between items-center">
                                 <input
-                                    className="w-full text-sm outline-none font-medium text-gray-800 placeholder-gray-400"
+                                    className="flex-1 text-sm outline-none font-medium text-gray-800 placeholder-gray-400"
                                     placeholder="Email subject line..."
                                     value={subject}
                                     onChange={(e) => setSubject(e.target.value)}
                                 />
+                                <button
+                                    onClick={() => setShowHtml(!showHtml)}
+                                    className={`ml-4 text-xs px-3 py-1.5 rounded-lg border transition ${showHtml ? 'bg-purple-600 text-white border-purple-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                                >
+                                    {showHtml ? 'Visual Editor' : 'HTML Editor'}
+                                </button>
                             </div>
-                            <ReactQuill
-                                theme="snow"
-                                value={content}
-                                onChange={setContent}
-                                modules={modules}
-                                style={{ height: '400px' }}
-                            />
-                            <div style={{ height: '42px' }} />
+
+                            {showHtml ? (
+                                <textarea
+                                    className="w-full p-4 text-sm font-mono outline-none resize-none"
+                                    style={{ height: '400px' }}
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    placeholder="Write raw HTML here..."
+                                />
+                            ) : (
+                                <>
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={content}
+                                        onChange={setContent}
+                                        modules={modules}
+                                        style={{ height: '400px' }}
+                                    />
+                                    <div style={{ height: '42px' }} />
+                                </>
+                            )}
                         </div>
 
-                        {/* Test send */}
                         <div className="mt-4 bg-white rounded-xl border border-gray-200 p-4 flex gap-3">
                             <input
                                 className="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-purple-400"
@@ -133,8 +151,12 @@ export default function EmailBuilder() {
                                 value={testEmail}
                                 onChange={(e) => setTestEmail(e.target.value)}
                             />
-                            <button onClick={handleSendTest} disabled={sending} className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 disabled:opacity-50">
-                                {sending ? 'Sending...' : 'Send Test'}
+                            <button
+                                onClick={handleSendTest}
+                                disabled={sending}
+                                className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+                            >
+                                {sending ? 'Sending...' : 'Send Test Email'}
                             </button>
                         </div>
                     </div>

@@ -76,4 +76,28 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// Export segment contacts as CSV
+router.get('/:id/export', async (req, res) => {
+  try {
+    const segment = await Segment.findById(req.params.id);
+    if (!segment) return res.status(404).json({ message: 'Segment not found' });
+    const filter = buildFilter(segment.filters || {});
+    const contacts = await Contact.find(filter);
+
+    const headers = ['Name', 'Email', 'Phone', 'City', 'Age', 'Total Spent', 'Total Orders', 'Tags', 'Subscribed'];
+    const rows = contacts.map(c => [
+      c.name, c.email, c.phone || '', c.city || '',
+      c.age || '', c.totalSpent || 0, c.totalOrders || 0,
+      (c.tags || []).join('|'), c.isUnsubscribed ? 'No' : 'Yes'
+    ]);
+
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="${segment.name}.csv"`);
+    res.send(csv);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

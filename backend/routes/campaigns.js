@@ -4,7 +4,7 @@ const Campaign = require('../models/Campaign');
 const Segment = require('../models/Segment');
 const Contact = require('../models/Contact');
 const auth = require('../middleware/auth');
-const { sendCampaignEmail } = require('../utils/mailer');
+const { sendCampaignEmail, sendTestEmail } = require('../utils/mailer');
 
 // Get all campaigns
 router.get('/', auth, async (req, res) => {
@@ -27,10 +27,13 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// Create campaign
 router.post('/', auth, async (req, res) => {
   try {
-    const campaign = await Campaign.create(req.body);
+    const campaignData = { ...req.body };
+    if (!campaignData.segment || campaignData.segment === '') {
+      campaignData.segment = null;
+    }
+    const campaign = await Campaign.create(campaignData);
     res.status(201).json(campaign);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -57,27 +60,35 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// SEND campaign — fires emails to all contacts in segment
 router.post('/:id/send', auth, async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id).populate('segment');
     if (!campaign) return res.status(404).json({ message: 'Campaign not found' });
 
-    // Get contacts in segment
-    const segmentDoc = await Segment.findById(campaign.segment._id);
-    const contacts = await Contact.find({
-      isUnsubscribed: false,
-      ...(segmentDoc.filters.city && { city: segmentDoc.filters.city }),
-    });
+    let contacts = [];
 
-    // Send emails
-    let sentCount = 0;
-    for (const contact of contacts) {
-      await sendCampaignEmail(contact.email, campaign.subject, campaign.content, contact._id);
-      sentCount++;
+    if (campaign.segment) {
+      const segmentDoc = await Segment.findById(campaign.segment._id);
+      const filter = { isUnsubscribed: false };
+      if (segmentDoc?.filters?.city) filter.city = segmentDoc.filters.city;
+      if (segmentDoc?.filters?.minAge) filter.age = { $gte: segmentDoc.filters.minAge };
+      if (segmentDoc?.filters?.minSpent) filter.totalSpent = { $gte: segmentDoc.filters.minSpent };
+      contacts = await Contact.find(filter);
+    } else {
+      // No segment — send to all active contacts
+      contacts = await Contact.find({ isUnsubscribed: false });
     }
 
-    // Update analytics
+    let sentCount = 0;
+    for (const contact of contacts) {
+      try {
+        await sendCampaignEmail(contact.email, campaign.subject, campaign.content, campaign._id, contact._id);
+        sentCount++;
+      } catch (emailErr) {
+        console.log(`Failed to send to ${contact.email}:`, emailErr.message);
+      }
+    }
+
     campaign.analytics.sent = sentCount;
     campaign.status = 'Active';
     await campaign.save();
@@ -91,8 +102,24 @@ router.post('/:id/send', auth, async (req, res) => {
 // Track email open (pixel tracking)
 router.get('/:id/track/open/:contactId', async (req, res) => {
   try {
-    await Campaign.findByIdAndUpdate(req.params.id, { $inc: { 'analytics.opened': 1 } });
-    // Return 1x1 transparent pixel
+    const ua = req.headers['user-agent'] || '';
+    const isMobile = /mobile/i.test(ua);
+    const isTablet = /tablet|ipad/i.test(ua);
+    const deviceKey = isTablet ? 'analytics.devices.tablet' : isMobile ? 'analytics.devices.mobile' : 'analytics.devices.desktop';
+
+    // Get contact city
+    const Contact = require('../models/Contact');
+    const contact = await Contact.findById(req.params.contactId);
+    const city = contact?.city || 'Unknown';
+
+    await Campaign.findByIdAndUpdate(req.params.id, {
+      $inc: {
+        'analytics.opened': 1,
+        [deviceKey]: 1,
+        [`analytics.cities.${city}`]: 1,
+      }
+    });
+
     const pixel = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
     res.writeHead(200, { 'Content-Type': 'image/gif', 'Content-Length': pixel.length });
     res.end(pixel);
@@ -108,6 +135,20 @@ router.get('/:id/track/click/:contactId', async (req, res) => {
     res.redirect(req.query.url || 'http://localhost:3000');
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+// Send test email
+router.post('/send-test', auth, async (req, res) => {
+  try {
+    const { to, subject, content } = req.body;
+    if (!to || !subject || !content) {
+      return res.status(400).json({ message: 'to, subject and content are required' });
+    }
+    await sendTestEmail(to, subject, content);
+    res.json({ message: `Test email sent to ${to}` });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to send email: ' + err.message });
   }
 });
 

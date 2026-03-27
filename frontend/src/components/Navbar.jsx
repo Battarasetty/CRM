@@ -21,6 +21,8 @@ export default function Navbar() {
                     <Link to="/segments" className="hover:text-purple-600">Segments</Link>
                     <Link to="/email-builder" className="hover:text-purple-600">Email Builder</Link>
                     <Link to="/analytics" className="hover:text-purple-600">Analytics</Link>
+                    <Link to="/capture" className="hover:text-purple-600">Lead Form</Link>
+                    {/* <Link to="/capture">Capture Lead</Link> */}
                 </div>
             </div>
             <div className="flex items-center gap-3">

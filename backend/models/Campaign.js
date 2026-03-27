@@ -8,6 +8,7 @@ const campaignSchema = new mongoose.Schema({
     subject: { type: String },
     content: { type: String },
     budget: { type: Number, default: 0 },
+    frequency: { type: String, enum: ['Once', 'Daily', 'Weekly', 'Monthly'], default: 'Once' },
     scheduledAt: { type: Date },
     abTest: {
         enabled: { type: Boolean, default: false },
@@ -20,6 +21,12 @@ const campaignSchema = new mongoose.Schema({
         clicked: { type: Number, default: 0 },
         bounced: { type: Number, default: 0 },
         unsubscribed: { type: Number, default: 0 },
+        devices: {
+            mobile: { type: Number, default: 0 },
+            desktop: { type: Number, default: 0 },
+            tablet: { type: Number, default: 0 },
+        },
+        cities: { type: Map, of: Number, default: {} },
     },
 }, { timestamps: true });
 

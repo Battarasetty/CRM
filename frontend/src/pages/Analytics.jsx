@@ -128,6 +128,70 @@ export default function Analytics() {
                     }
                 </div>
 
+                {/* Device breakdown */}
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div className="bg-white rounded-xl border border-gray-200 p-5">
+                        <h2 className="text-sm font-medium text-gray-700 mb-4">Device breakdown</h2>
+                        {campaigns.length === 0 ? (
+                            <p className="text-sm text-gray-400 text-center py-4">No data yet</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {['mobile', 'desktop', 'tablet'].map((device) => {
+                                    const total = campaigns.reduce((acc, c) => acc + (c.analytics?.devices?.[device] || 0), 0);
+                                    const max = campaigns.reduce((acc, c) => acc + (c.analytics?.opened || 0), 0) || 1;
+                                    const pct = Math.round((total / max) * 100);
+                                    return (
+                                        <div key={device}>
+                                            <div className="flex justify-between text-xs text-gray-600 mb-1">
+                                                <span className="capitalize">{device}</span>
+                                                <span>{total} opens ({pct}%)</span>
+                                            </div>
+                                            <div className="w-full bg-gray-100 rounded-full h-2">
+                                                <div className="bg-purple-500 h-2 rounded-full" style={{ width: `${pct}%` }} />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Geographic distribution */}
+                    <div className="bg-white rounded-xl border border-gray-200 p-5">
+                        <h2 className="text-sm font-medium text-gray-700 mb-4">Geographic distribution</h2>
+                        {campaigns.length === 0 ? (
+                            <p className="text-sm text-gray-400 text-center py-4">No data yet</p>
+                        ) : (() => {
+                            const cityMap = {};
+                            campaigns.forEach(c => {
+                                if (c.analytics?.cities) {
+                                    Object.entries(c.analytics.cities).forEach(([city, count]) => {
+                                        cityMap[city] = (cityMap[city] || 0) + count;
+                                    });
+                                }
+                            });
+                            const entries = Object.entries(cityMap).sort((a, b) => b[1] - a[1]);
+                            const max = entries[0]?.[1] || 1;
+                            return entries.length === 0 ? (
+                                <p className="text-sm text-gray-400 text-center py-4">Send campaigns to see city data</p>
+                            ) : (
+                                <div className="space-y-3">
+                                    {entries.slice(0, 6).map(([city, count]) => (
+                                        <div key={city}>
+                                            <div className="flex justify-between text-xs text-gray-600 mb-1">
+                                                <span>{city}</span><span>{count} opens</span>
+                                            </div>
+                                            <div className="w-full bg-gray-100 rounded-full h-2">
+                                                <div className="bg-teal-500 h-2 rounded-full" style={{ width: `${Math.round((count / max) * 100)}%` }} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })()}
+                    </div>
+                </div>
+
                 {/* Campaign table */}
                 <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                     <div className="p-4 border-b border-gray-100">

@@ -110,7 +110,23 @@ export default function Segments() {
                         <div key={s._id} className="bg-white rounded-xl border border-gray-200 p-5">
                             <div className="flex justify-between items-start mb-2">
                                 <h3 className="font-medium text-gray-800">{s.name}</h3>
-                                <button onClick={() => handleDelete(s._id)} className="text-xs text-red-400 hover:text-red-600">Delete</button>
+
+                                <div className="flex gap-2">
+                                    <a
+                                        href={`http://localhost:5000/api/segments/${s._id}/export`}
+                                        className="text-xs text-teal-600 hover:underline"
+                                        download
+                                    >
+                                        Export CSV
+                                    </a>
+
+                                    <button
+                                        onClick={() => handleDelete(s._id)}
+                                        className="text-xs text-red-400 hover:text-red-600"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                             {s.description && <p className="text-xs text-gray-400 mb-3">{s.description}</p>}
                             <div className="text-3xl font-semibold text-purple-700 mb-1">{s.contactCount}</div>

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import API from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Contacts() {
     const [contacts, setContacts] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [search, setSearch] = useState('');
     const [form, setForm] = useState({ name: '', email: '', phone: '', city: '', age: '', totalSpent: '', totalOrders: '', tags: '' });
+    const navigate = useNavigate();
 
     useEffect(() => { fetchContacts(); }, []);
 
@@ -50,15 +52,38 @@ export default function Contacts() {
         (c.city || '').toLowerCase().includes(search.toLowerCase())
     );
 
+    const handleEnrich = async (id) => {
+        try {
+            const { data } = await API.post(`/contacts/${id}/enrich`);
+            alert(`Enriched! Company: ${data.contact.company}, Role: ${data.contact.jobTitle}`);
+            fetchContacts();
+        } catch (err) {
+            alert('Enrichment failed: ' + err.response?.data?.message);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
             <div className="max-w-6xl mx-auto p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-semibold text-gray-800">Contacts</h1>
-                    <button onClick={() => setShowForm(!showForm)} className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700">
-                        + Add Contact
-                    </button>
+
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => navigate('/capture')}
+                            className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700"
+                        >
+                            + Capture Lead
+                        </button>
+
+                        <button
+                            onClick={() => setShowForm(!showForm)}
+                            className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700"
+                        >
+                            + Add Contact
+                        </button>
+                    </div>
                 </div>
 
                 {showForm && (
@@ -83,7 +108,7 @@ export default function Contacts() {
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                {['Name', 'Email', 'City', 'Age', 'Total Spent', 'Orders', 'Tags', 'Status', 'Actions'].map(h => (
+                                {['Name', 'Email', 'City', 'Age', 'Total Spent', 'Orders', 'Company', 'Job Title', 'Tags', 'Status', 'Actions'].map(h => (
                                     <th key={h} className="text-left text-xs font-medium text-gray-500 px-4 py-3">{h}</th>
                                 ))}
                             </tr>
@@ -100,6 +125,8 @@ export default function Contacts() {
                                     <td className="px-4 py-3 text-sm text-gray-600">{c.age || '—'}</td>
                                     <td className="px-4 py-3 text-sm text-gray-600">₹{c.totalSpent || 0}</td>
                                     <td className="px-4 py-3 text-sm text-gray-600">{c.totalOrders || 0}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{c.company || '—'}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{c.jobTitle || '—'}</td>
                                     <td className="px-4 py-3 text-sm text-gray-600">{(c.tags || []).join(', ') || '—'}</td>
                                     <td className="px-4 py-3">
                                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${c.isUnsubscribed ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
@@ -107,11 +134,21 @@ export default function Contacts() {
                                         </span>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 flex-wrap">
+                                            <button
+                                                onClick={() => handleEnrich(c._id)}
+                                                className="text-xs text-purple-600 hover:underline"
+                                            >
+                                                Enrich
+                                            </button>
                                             {!c.isUnsubscribed && (
-                                                <button onClick={() => handleUnsubscribe(c._id)} className="text-xs text-amber-600 hover:underline">Unsub</button>
+                                                <button onClick={() => handleUnsubscribe(c._id)} className="text-xs text-amber-600 hover:underline">
+                                                    Unsub
+                                                </button>
                                             )}
-                                            <button onClick={() => handleDelete(c._id)} className="text-xs text-red-500 hover:underline">Delete</button>
+                                            <button onClick={() => handleDelete(c._id)} className="text-xs text-red-500 hover:underline">
+                                                Delete
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

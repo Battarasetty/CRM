@@ -10,6 +10,7 @@ import Segments from './pages/Segments'
 import EmailBuilder from './pages/EmailBuilder'
 import Analytics from './pages/Analytics'
 import './index.css'
+import LeadCapture from './pages/LeadCapture'
 
 const Protected = ({ children }) => {
   const { token } = useAuth();
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/segments" element={<Protected><Segments /></Protected>} />
           <Route path="/email-builder" element={<Protected><EmailBuilder /></Protected>} />
           <Route path="/analytics" element={<Protected><Analytics /></Protected>} />
+          <Route path="/capture" element={<LeadCapture />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

@@ -8,10 +8,9 @@ export default function Campaigns() {
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({
         name: '', type: 'Email', subject: '', content: '',
-        budget: '', scheduledAt: '', segment: '',
+        budget: '', scheduledAt: '', segment: '', frequency: 'Once',
         abTest: { enabled: false, variantA: '', variantB: '' }
     });
-
     useEffect(() => {
         fetchCampaigns();
         fetchSegments();
@@ -30,9 +29,18 @@ export default function Campaigns() {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            await API.post('/campaigns', form);
+            const payload = {
+                ...form,
+                segment: form.segment === '' ? null : form.segment,
+                budget: form.budget === '' ? 0 : Number(form.budget),
+            };
+            await API.post('/campaigns', payload);
             setShowForm(false);
-            setForm({ name: '', type: 'Email', subject: '', content: '', budget: '', scheduledAt: '', segment: '', abTest: { enabled: false, variantA: '', variantB: '' } });
+            setForm({
+                name: '', type: 'Email', subject: '', content: '',
+                budget: '', scheduledAt: '', segment: '', frequency: 'Once',
+                abTest: { enabled: false, variantA: '', variantB: '' }
+            });
             fetchCampaigns();
         } catch (err) {
             alert(err.response?.data?.message || 'Error creating campaign');
@@ -88,6 +96,16 @@ export default function Campaigns() {
                             <input className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-purple-400" placeholder="Email subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} />
                             <input type="number" className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-purple-400" placeholder="Budget (₹)" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} />
                             <input type="datetime-local" className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-purple-400" value={form.scheduledAt} onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })} />
+                            <select
+                                className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-purple-400"
+                                value={form.frequency}
+                                onChange={(e) => setForm({ ...form, frequency: e.target.value })}
+                            >
+                                <option value="Once">Send Once</option>
+                                <option value="Daily">Daily</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
                             <select className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-purple-400" value={form.segment} onChange={(e) => setForm({ ...form, segment: e.target.value })}>
                                 <option value="">Select segment (optional)</option>
                                 {segments.map((s) => <option key={s._id} value={s._id}>{s.name} ({s.contactCount} contacts)</option>)}
@@ -147,6 +165,34 @@ export default function Campaigns() {
                             {c.budget > 0 && <p className="text-xs text-gray-400 mt-2">Budget: ₹{c.budget}</p>}
                         </div>
                     ))}
+                </div>
+
+
+                {/* Campaign Calendar */}
+                <div className="mt-8 bg-white rounded-xl border border-gray-200 p-5">
+                    <h2 className="text-sm font-medium text-gray-700 mb-4">Campaign Calendar</h2>
+                    {campaigns.filter(c => c.scheduledAt).length === 0 ? (
+                        <p className="text-sm text-gray-400 text-center py-4">No scheduled campaigns yet. Set a schedule date when creating a campaign.</p>
+                    ) : (
+                        <div className="space-y-2">
+                            {campaigns
+                                .filter(c => c.scheduledAt)
+                                .sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt))
+                                .map(c => (
+                                    <div key={c._id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                                        <div className="text-center bg-purple-100 text-purple-700 rounded-lg px-3 py-2 min-w-16">
+                                            <div className="text-xs font-medium">{new Date(c.scheduledAt).toLocaleString('default', { month: 'short' })}</div>
+                                            <div className="text-xl font-semibold">{new Date(c.scheduledAt).getDate()}</div>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-800">{c.name}</p>
+                                            <p className="text-xs text-gray-400">{c.type} · {new Date(c.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                        </div>
+                                        <span className={`ml-auto text-xs px-2 py-0.5 rounded-full font-medium ${c.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{c.status}</span>
+                                    </div>
+                                ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
