@@ -97,4 +97,4 @@ npm run dev
 See ER diagram in /docs/er-diagram.png
 
 ## Demo
-[Add your Loom video link here]
+https://www.loom.com/share/87667d78b7b1459c9f6e5d95da00bdbf
