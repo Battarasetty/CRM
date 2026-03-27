@@ -1,0 +1,714 @@
+{
+	"info": {
+		"_postman_id": "4a5e39bd-fdc8-4dde-8634-e9daa3e86583",
+		"name": "Marketing CRM API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26058964"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Harish\",\r\n  \"email\": \"harish@test.com\",\r\n  \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/auth/register",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"harish@test.com\",\r\n  \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/auth/login",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/contacts",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a contact",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Test Contact\",\r\n  \"email\": \"testcontact@example.com\",\r\n  \"phone\": \"9999999999\",\r\n  \"city\": \"Hyderabad\",\r\n  \"age\": 25,\r\n  \"totalSpent\": 5000,\r\n  \"tags\": [\"VIP\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/contacts",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bulk import contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contacts\": [\r\n    { \"name\": \"Bulk1\", \"email\": \"bulk1@example.com\" },\r\n    { \"name\": \"Bulk2\", \"email\": \"bulk2@example.com\" }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/contacts/bulk",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts",
+						"bulk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update contact",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phone\": \"8888888888\",\r\n  \"city\": \"Mumbai\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/contacts/69c6aeb64e40e6f729d2d747",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts",
+						"69c6aeb64e40e6f729d2d747"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete contact",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/contacts/69c675994dce02f50eed428a",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts",
+						"69c675994dce02f50eed428a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unsubscribe contact",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/contacts/69c6aeb64e40e6f729d2d747/unsubscribe",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts",
+						"69c6aeb64e40e6f729d2d747",
+						"unsubscribe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Public lead capture",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Lead Test\",\r\n  \"email\": \"lead@example.com\",\r\n  \"phone\": \"8888888888\",\r\n  \"city\": \"Mumbai\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/contacts/capture",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts",
+						"capture"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enrich contact",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/contacts/69c6aeb64e40e6f729d2d747/enrich",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"contacts",
+						"69c6aeb64e40e6f729d2d747",
+						"enrich"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Preview segment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"filters\": {\r\n    \"city\": \"Hyderabad\",\r\n    \"minAge\": 18,\r\n    \"minSpent\": 1000,\r\n    \"tags\": [\"VIP\"]\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/segments/preview",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"segments",
+						"preview"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all segments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/segments",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"segments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create segment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"VIP Hyderabad\",\r\n  \"filters\": {\r\n    \"city\": \"Hyderabad\",\r\n    \"minAge\": 18,\r\n    \"minSpent\": 1000,\r\n    \"tags\": [\"VIP\"]\r\n  },\r\n  \"description\": \"VIP customers in Hyderabad\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/segments",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"segments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get contacts of a segment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/segments/69c6b1d44e40e6f729d2d766/contacts",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"segments",
+						"69c6b1d44e40e6f729d2d766",
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete segment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/segments/69c6b1d44e40e6f729d2d766",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"segments",
+						"69c6b1d44e40e6f729d2d766"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Export segment contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/segments/69c67ebf4dce02f50eed429e/export",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"segments",
+						"69c67ebf4dce02f50eed429e",
+						"export"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all campaigns",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/campaigns",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"campaigns"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create campaign",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Test Campaign\",\r\n  \"subject\": \"Hello from CRM\",\r\n  \"content\": \"<h1>Hi!</h1><p>Test campaign content</p>\",\r\n  \"segment\": \"69c67ebf4dce02f50eed429e\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/campaigns",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"campaigns"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Campaign",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Updated Campaign Name\",\r\n  \"subject\": \"Updated Subject\",\r\n  \"content\": \"<p>Updated campaign content</p>\",\r\n  \"segment\": \"69c67ebf4dce02f50eed429e\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/campaigns/69c6b2dd4e40e6f729d2d775",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"campaigns",
+						"69c6b2dd4e40e6f729d2d775"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Campaign",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/campaigns/69c6b2dd4e40e6f729d2d775",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"campaigns",
+						"69c6b2dd4e40e6f729d2d775"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Test Email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"to\": \"harish@test.com\",\r\n  \"subject\": \"Test Campaign Email\",\r\n  \"content\": \"<p>Hello! This is a test email.</p>\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/campaigns/send-test",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"campaigns",
+						"send-test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Campaign",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzZhYzg3NGU0MGU2ZjcyOWQyZDczYiIsImlhdCI6MTc3NDYyODEzMSwiZXhwIjoxNzc1MjMyOTMxfQ.Pg9kgvXmDzNzy3MSIv9cfKKJcr-z4qbSg74XTLD-BHM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/campaigns/69c684aa0eed3c1b484310fa/send",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"campaigns",
+						"69c684aa0eed3c1b484310fa",
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
